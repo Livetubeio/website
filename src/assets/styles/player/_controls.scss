@@ -1,0 +1,31 @@
+.controls {
+    position: fixed;
+    height: 90px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 0 8px rgba(0,0,0,.4);
+    text-align: center;
+    line-height: 90px;
+    z-index: 10000;
+
+    .play-toggle {
+        display: inline-block;
+        font-size: 68px;
+        color: #F3452B;
+        margin: 10px 0;
+        cursor: pointer;
+    }
+
+    .progress {
+        height: 4px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #F3452B;
+        margin: 0;
+        border-radius: 0;
+    }
+
+}

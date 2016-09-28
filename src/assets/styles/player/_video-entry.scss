@@ -1,0 +1,19 @@
+.video-entry {
+  padding: 20px;
+  margin-bottom: 0;
+  cursor: pointer;
+
+  &:hover {
+    background: #EEEEEE;
+  }
+
+  &--active {
+    background: #F56A22;
+    color: white;
+    font-weight: bold;
+
+    &:hover {
+      background: #F56A22;
+    }
+  }
+}

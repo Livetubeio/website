@@ -1,0 +1,33 @@
+.player-wrapper {
+  margin-bottom: 100px;
+}
+
+#video-search {
+    margin-bottom: 90px;
+
+    .modal-content {
+        border-radius: 0;
+    }
+}
+
+.search-trigger {
+    position: absolute;
+    right: 10px;
+    margin-top: -40px;
+}
+
+
+#volume {
+    position: absolute;
+    right: 10px;
+    top: 28px;
+    width: 200px;
+}
+
+.main-player {
+  width: 100%;
+
+  iframe {
+    width: 100%;
+  }
+}
