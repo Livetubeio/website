@@ -3,12 +3,12 @@
   <div class="container">
     <div class="row">
       <div class="col-s12">
-        <div class="card">
-          <youtube class="main-player" :video-id="activeVideo"></youtube>
+        <div class="card" v-if="channeldata">
+          <youtube class="main-player" :video-id="channeldata.active"></youtube>
           <a href="#video-search" class="search-trigger btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
           <div class="card-content">
-            <span class="card-title">Video List</span>
-            <video-list-entry @click.native="selectVideo(video)" v-for="video in videos" :active-video="activeVideo" :video="video"></video-list-entry>
+            <span class="card-title">asd {{ channeldata.position }}</span>
+            <video-list-entry @click.native="selectVideo(video)" v-for="video in channeldata.videos" :active-video="channeldata.active" :video="video"></video-list-entry>
           </div>
         </div>
       </div>
@@ -33,29 +33,42 @@
 <script>
 import VideoListEntry from './partials/player/VideoListEntry'
 import Youtube from './partials/player/Youtube'
+import Firebase from 'firebase'
+
+var firebaseApp = Firebase.initializeApp({
+  apiKey: 'AIzaSyCZkM0D-k7Vi2cU-SlwBQx7aKGNRyqO-Xs',
+  authDomain: 'livetubeio-16323.firebaseapp.com',
+  databaseURL: 'https://livetubeio-16323.firebaseio.com',
+  storageBucket: '',
+  messagingSenderId: '204608398113'
+})
+var db = firebaseApp.database()
 
 export default {
+  ready() {
+    this.$watch('channeldata.active', () => {
+      console.log(this.channeldata.active)
+    })
+  },
   data() {
     return {
-      videos: [
-        {
-          title: 'Calvin Harris - This is What You Came For',
-          length: 238,
-          ytid: 'kOkQ4T5WO9E'
-        },
-        {
-          title: 'twenty one pilots: Heathens (from Suicide Squad: The Album) [OFFICIAL VIDEO]',
-          length: 217,
-          ytid: 'UprcpdwuwCg'
-        }
-      ],
-      activeVideo: 'kOkQ4T5WO9E'
+      activeVideo: 'kOkQ4T5WO9E',
+      channel: 'livetubeio'
+    }
+  },
+  firebase: function() {
+    return {
+      // simple syntax, bind as an array by default
+      channeldata: {
+        source: db.ref('channels/' + this.$route.params.channel),
+        asObject: true
+      }
     }
   },
   methods: {
     selectVideo(video) {
-      console.log(video)
-      this.activeVideo = video.ytid
+      // this.channeldata.set('active', video.ytid)
+      db.ref('channels/' + this.$route.params.channel + '/active').set(video.ytid)
     }
   },
   components: {

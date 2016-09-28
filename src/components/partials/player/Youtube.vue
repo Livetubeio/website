@@ -11,15 +11,15 @@ const container = {
 
   run() {
     this.scripts.forEach((callback) => {
-      callback(this.YT)
+      callback(window.YT)
     })
     this.scripts = []
   },
 
   register(callback) {
-    if (this.YT) {
+    if (window.YT && window.YT.Player) {
       Vue.nextTick(() => {
-        callback(this.YT)
+        callback(window.YT)
       })
     } else {
       this.scripts.push(callback)
@@ -36,11 +36,6 @@ const events = {
 }
 
 let pid = 0
-
-const tag = document.createElement('script')
-tag.src = 'https://www.youtube.com/player_api'
-const firstScriptTag = document.getElementsByTagName('script')[0]
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
 window.onYouTubeIframeAPIReady = function() {
   container.YT = window.YT
@@ -69,8 +64,10 @@ export default {
       this.player.setSize(this.playerWidth || '640', this.playerHeight || '390')
     },
     update(videoId) {
-      const name = 'loadVideoById'
-      this.player[name](videoId)
+      if (this.player && this.player.loadVideoById) {
+        console.log('update')
+        this.player.loadVideoById(videoId)
+      }
     }
   },
   mounted() {
@@ -89,6 +86,7 @@ export default {
         videoId,
         events: {
           onReady: (event) => {
+            this.player.loadVideoById(this.videoId)
             this.$emit('ready', event.target)
           },
           onStateChange: (event) => {
