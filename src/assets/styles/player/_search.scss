@@ -1,0 +1,56 @@
+#video-search {
+  max-height: none;
+
+  .modal-content {
+    height: calc(90vh - 100px);
+    padding: 0;
+  }
+}
+
+input.video-search-bar {
+  width: 100%;
+  font-size: 2em;
+  text-align: center;
+  color: rgba(0,0,0,0.5);
+  line-height: 80px;
+  display: block;
+  height: 80px;
+  font-weight: lighter;
+}
+
+.video-result-card {
+  width: 320px;
+  height: 290px;
+  display: inline-block;
+  margin: 10px;
+  overflow: hidden;
+
+  .card-image {
+    position: relative;
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 11;
+    }
+  }
+
+  .card-content {
+    height: 110px;
+
+    .card-title {
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+}

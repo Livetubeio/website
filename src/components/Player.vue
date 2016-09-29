@@ -4,8 +4,8 @@
     <div class="row">
       <div class="col-s12">
         <div class="card" v-if="channeldata">
-          <youtube @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
-          <a href="#video-search" class="search-trigger btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+          <youtube :player-vars="{controls: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
+          <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
           <div class="card-content">
             <span class="card-title">{{ channel }}</span>
             <video-list-entry @click.native="selectVideo(video)" v-for="video in channeldata.videos" :active-video="channeldata.active" :video="video"></video-list-entry>
@@ -18,22 +18,22 @@
   <div class="controls">
     <div class="progress" style="width: 67%;"></div>
     <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
-    <input type="range" id="volume" value="50">
+    <div id="volume"></div>
   </div>
 
-  <div id="video-search" class="modal bottom-sheet">
-    <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-    </div>
-  </div>
+  <video-search></video-search>
 </div>
 </template>
 
 <script>
+/* global $ */
+/* eslint no-unused-vars: 0 */
 import VideoListEntry from './partials/player/VideoListEntry'
 import Youtube from './partials/player/Youtube'
+import VideoSearch from './partials/player/VideoSearch'
 import Firebase from 'firebase'
+import noUiSlider from 'nouislider'
+import Vue from 'vue'
 
 var firebaseApp = Firebase.initializeApp({
   apiKey: 'AIzaSyCZkM0D-k7Vi2cU-SlwBQx7aKGNRyqO-Xs',
@@ -47,21 +47,33 @@ var db = firebaseApp.database()
 export default {
   created() {
     this.channel = this.$route.params.channel
+    this.volume = window.localStorage.getItem('volume', 100)
 
     this.$watch('channeldata', () => {
-      if (this.channeldata.playerstate === 1) {
-        this.playToggleIcon = 'pause_circle_filled'
-        this.player.playVideo()
-      } else {
-        this.player.pauseVideo()
-        this.playToggleIcon = 'play_circle_filled'
-      }
+      this.setPlayerState()
+    })
+
+    Vue.nextTick(() => {
+      var slider = document.getElementById('volume')
+      noUiSlider.create(slider, {
+        start: this.volume,
+        step: 1,
+        range: {
+          'min': 0,
+          'max': 100
+        }
+      })
+      slider.noUiSlider.on('update', (values) => {
+        this.volume = parseInt(values[0])
+        this.setVolume()
+      })
     })
   },
   data() {
     return {
       channel: null,
       player: null,
+      volume: 100,
       playToggleIcon: 'pause_circle_filled'
     }
   },
@@ -76,7 +88,6 @@ export default {
   },
   methods: {
     selectVideo(video) {
-      // this.channeldata.set('active', video.ytid)
       db.ref('channels/' + this.$route.params.channel + '/active').set(video.ytid)
     },
     toggleVideo() {
@@ -89,13 +100,49 @@ export default {
         db.ref('channels/' + this.$route.params.channel + '/playerstate').set(1)
       }
     },
+    setPlayerState() {
+      if (this.channeldata.playerstate === 1) {
+        this.playToggleIcon = 'pause_circle_filled'
+        if (this.player) {
+          this.player.playVideo()
+        }
+      } else {
+        if (this.player) {
+          this.player.pauseVideo()
+        }
+        this.playToggleIcon = 'play_circle_filled'
+      }
+    },
     playerReady(player) {
       this.player = player
+      this.setPlayerState()
+      this.setVolume()
+    },
+    showVideoSearch() {
+      $('#video-search').openModal()
+      $('#video-search .video-search-bar').focus()
+    },
+    mute() {
+      if (this.player) {
+        this.player.mute()
+      }
+    },
+    unmute() {
+      if (this.player) {
+        this.player.unmute()
+      }
+    },
+    setVolume() {
+      window.localStorage.setItem('volume', this.volume)
+      if (this.player) {
+        this.player.setVolume(this.volume)
+      }
     }
   },
   components: {
     VideoListEntry,
-    Youtube
+    Youtube,
+    VideoSearch
   }
 }
 </script>
