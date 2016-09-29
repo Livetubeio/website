@@ -25,16 +25,20 @@ export default {
   },
   methods: {
     setPreview(preview) {
-      if (this.preview) {
-        EventBus.dispatch('unmuteall')
-      } else {
+      if (preview) {
         EventBus.dispatch('muteall')
+      } else {
+        EventBus.dispatch('unmuteall')
       }
       this.preview = preview
     },
     addvideo() {
       // TODO: add the video
       this.preview = false
+      EventBus.dispatch('addvideo', {
+        title: this.result.snippet.title,
+        ytid: this.result.id.videoId
+      })
       $('#video-search').closeModal()
     }
   },

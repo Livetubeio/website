@@ -34,6 +34,7 @@ import VideoSearch from './partials/player/VideoSearch'
 import Firebase from 'firebase'
 import noUiSlider from 'nouislider'
 import Vue from 'vue'
+import EventBus from 'eventbusjs'
 
 var firebaseApp = Firebase.initializeApp({
   apiKey: 'AIzaSyCZkM0D-k7Vi2cU-SlwBQx7aKGNRyqO-Xs',
@@ -48,6 +49,11 @@ export default {
   created() {
     this.channel = this.$route.params.channel
     this.volume = window.localStorage.getItem('volume', 100)
+
+    EventBus.addEventListener('addvideo', (data) => {
+      console.log('add', data)
+      this.$firebaseRefs.videos.push(data.target)
+    })
 
     this.$watch('channeldata', () => {
       this.setPlayerState()
@@ -83,7 +89,8 @@ export default {
       channeldata: {
         source: db.ref('channels/' + this.$route.params.channel),
         asObject: true
-      }
+      },
+      videos: db.ref('channels/' + this.$route.params.channel + '/videos')
     }
   },
   methods: {

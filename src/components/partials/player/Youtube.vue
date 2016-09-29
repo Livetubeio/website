@@ -74,7 +74,7 @@ export default {
   },
   mounted() {
     container.register((YouTube) => {
-      const {
+      var {
         playerHeight: height = '390',
         playerWidth: width = '640',
         playerVars = {
@@ -85,12 +85,14 @@ export default {
       } = this
 
       EventBus.addEventListener('muteall', () => {
-        if (typeof this.player !== 'undefined') {
+        this.shouldMute = true
+        if (typeof this.player !== 'undefined' && this.player && this.player.mute) {
           this.player.mute()
         }
       })
       EventBus.addEventListener('unmuteall', () => {
-        if (typeof this.player !== 'undefined') {
+        this.shouldMute = false
+        if (typeof this.player !== 'undefined' && this.player && this.player.unMute) {
           this.player.unMute()
         }
       })
@@ -104,6 +106,9 @@ export default {
           onReady: (event) => {
             this.player.loadVideoById(this.videoId)
             this.$emit('ready', event.target)
+            if (this.shouldMute) {
+              this.player.mute()
+            }
           },
           onStateChange: (event) => {
             if (event.data !== -1) {
