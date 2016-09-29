@@ -122,16 +122,6 @@ export default {
       $('#video-search').openModal()
       $('#video-search .video-search-bar').focus()
     },
-    mute() {
-      if (this.player) {
-        this.player.mute()
-      }
-    },
-    unmute() {
-      if (this.player) {
-        this.player.unmute()
-      }
-    },
     setVolume() {
       window.localStorage.setItem('volume', this.volume)
       if (this.player) {

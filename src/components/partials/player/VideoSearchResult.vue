@@ -14,6 +14,8 @@
 <script>
 /* global $ */
 import VideoPreview from './VideoPreview.vue'
+import EventBus from 'eventbusjs'
+
 export default {
   props: ['result'],
   data() {
@@ -23,12 +25,12 @@ export default {
   },
   methods: {
     setPreview(preview) {
-      this.preview = preview
       if (this.preview) {
-        this.$broadcast('mute')
+        EventBus.dispatch('unmuteall')
       } else {
-        this.$broadcast('unmute')
+        EventBus.dispatch('muteall')
       }
+      this.preview = preview
     },
     addvideo() {
       // TODO: add the video

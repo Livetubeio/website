@@ -1,9 +1,12 @@
 <template>
-<div><div :id="elementId"></div></div>
+<div>
+  <div :id="elementId"></div>
+</div>
 </template>
 
 <script>
 'use strict'
+import EventBus from 'eventbusjs'
 
 const container = {
   scripts: [],
@@ -74,9 +77,23 @@ export default {
       const {
         playerHeight: height = '390',
         playerWidth: width = '640',
-        playerVars = {autoplay: 0, start: 0},
+        playerVars = {
+          autoplay: 0,
+          start: 0
+        },
         videoId
       } = this
+
+      EventBus.addEventListener('muteall', () => {
+        if (typeof this.player !== 'undefined') {
+          this.player.mute()
+        }
+      })
+      EventBus.addEventListener('unmuteall', () => {
+        if (typeof this.player !== 'undefined') {
+          this.player.unMute()
+        }
+      })
 
       this.player = new YouTube.Player(this.elementId, {
         height,
