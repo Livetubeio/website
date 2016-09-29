@@ -4,10 +4,10 @@
     <div class="row">
       <div class="col-s12">
         <div class="card" v-if="channeldata">
-          <youtube class="main-player" :video-id="channeldata.active"></youtube>
+          <youtube @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
           <a href="#video-search" class="search-trigger btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
           <div class="card-content">
-            <span class="card-title">asd {{ channeldata.position }}</span>
+            <span class="card-title">{{ channel }}</span>
             <video-list-entry @click.native="selectVideo(video)" v-for="video in channeldata.videos" :active-video="channeldata.active" :video="video"></video-list-entry>
           </div>
         </div>
@@ -17,7 +17,7 @@
 
   <div class="controls">
     <div class="progress" style="width: 67%;"></div>
-    <i class="material-icons dp48 play-toggle">pause_circle_filled</i>
+    <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
     <input type="range" id="volume" value="50">
   </div>
 
@@ -45,15 +45,24 @@ var firebaseApp = Firebase.initializeApp({
 var db = firebaseApp.database()
 
 export default {
-  ready() {
-    this.$watch('channeldata.active', () => {
-      console.log(this.channeldata.active)
+  created() {
+    this.channel = this.$route.params.channel
+
+    this.$watch('channeldata', () => {
+      if (this.channeldata.playerstate === 1) {
+        this.playToggleIcon = 'pause_circle_filled'
+        this.player.playVideo()
+      } else {
+        this.player.pauseVideo()
+        this.playToggleIcon = 'play_circle_filled'
+      }
     })
   },
   data() {
     return {
-      activeVideo: 'kOkQ4T5WO9E',
-      channel: 'livetubeio'
+      channel: null,
+      player: null,
+      playToggleIcon: 'pause_circle_filled'
     }
   },
   firebase: function() {
@@ -69,6 +78,19 @@ export default {
     selectVideo(video) {
       // this.channeldata.set('active', video.ytid)
       db.ref('channels/' + this.$route.params.channel + '/active').set(video.ytid)
+    },
+    toggleVideo() {
+      if (this.channeldata.playerstate === 1) {
+        // Pause the video
+        this.player.pauseVideo()
+        db.ref('channels/' + this.$route.params.channel + '/playerstate').set(2)
+      } else {
+        // Play the video
+        db.ref('channels/' + this.$route.params.channel + '/playerstate').set(1)
+      }
+    },
+    playerReady(player) {
+      this.player = player
     }
   },
   components: {

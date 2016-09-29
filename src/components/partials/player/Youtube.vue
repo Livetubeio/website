@@ -65,7 +65,6 @@ export default {
     },
     update(videoId) {
       if (this.player && this.player.loadVideoById) {
-        console.log('update')
         this.player.loadVideoById(videoId)
       }
     }
