@@ -31,3 +31,14 @@
     width: 100%;
   }
 }
+
+.background-drop {
+  background-size: cover;
+  background-position-y: -30vh;
+  position: fixed;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
+  filter: blur(30px);
+}

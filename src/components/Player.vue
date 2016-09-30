@@ -1,5 +1,6 @@
 <template>
 <div class="player-wrapper">
+  <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
   <div class="container">
     <div class="row">
       <div class="col-s12">
@@ -155,6 +156,14 @@ export default {
       if (this.timelineInterval) {
         window.stopInterval(this.timelineInterval)
       }
+    }
+  },
+  computed: {
+    backgroundImage() {
+      if (!this.channeldata.active) {
+        return ''
+      }
+      return 'https://img.youtube.com/vi/' + this.channeldata.active + '/0.jpg'
     }
   },
   components: {
