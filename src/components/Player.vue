@@ -18,7 +18,7 @@
 
   <div class="controls">
     <div class="progress" :style="{width: progress + '%'}"></div>
-    <i class="material-icons dp48 player-control" @click="nextVideo">skip_previous</i>
+    <i class="material-icons dp48 player-control" @click="prevVideo">skip_previous</i>
     <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
     <i class="material-icons dp48 player-control" @click="nextVideo">skip_next</i>
     <div class="volume-wrapper">
@@ -141,6 +141,11 @@ export default {
       this.player = player
       this.setPlayerState()
       this.setVolume()
+      this.player.addEventListener('onStateChange', (event) => {
+        if (event.data === 0) {
+          this.nextVideo()
+        }
+      })
     },
     showVideoSearch() {
       $('#video-search').openModal()
@@ -157,7 +162,7 @@ export default {
         if (this.player) {
           this.progress = (this.player.getCurrentTime() / this.player.getDuration()) * 100
         }
-      }, 1000)
+      }, 100)
     },
     stopTimeline() {
       if (this.timelineInterval) {
@@ -182,6 +187,30 @@ export default {
       if (nextPosition === this.videos.length) {
         // This was the last video, go to the first one.
         this.channeldata.active = this.videos[0].ytid
+        return
+      }
+
+      // Go to the next video
+      this.channeldata.active = this.videos[nextPosition].ytid
+    },
+    prevVideo() {
+      if (!this.videos) {
+        return
+      }
+      // Search the current video
+      let current = this.videos.find((video) => {
+        return video.ytid === this.channeldata.active
+      })
+      if (!current) {
+        // Couldn't find the active video, go to the first one.
+        this.channeldata.active = this.videos[0].ytid
+        return
+      }
+
+      let nextPosition = this.videos.indexOf(current) - 1
+      if (nextPosition === -1) {
+        // This was the first video, go to the last one.
+        this.channeldata.active = this.videos[this.videos.length - 1].ytid
         return
       }
 
