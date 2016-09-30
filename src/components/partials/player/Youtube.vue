@@ -67,8 +67,12 @@ export default {
       this.player.setSize(this.playerWidth || '640', this.playerHeight || '390')
     },
     update(videoId) {
-      if (this.player && this.player.loadVideoById) {
-        this.player.loadVideoById(videoId)
+      const {
+        playerVars = {autoplay: 0}
+      } = this
+      const name = `${playerVars.autoplay ? 'load' : 'cue'}VideoById`
+      if (this.player && this.player[name]) {
+        this.player[name](videoId)
       }
     }
   },
@@ -104,7 +108,12 @@ export default {
         videoId,
         events: {
           onReady: (event) => {
-            this.player.loadVideoById(this.videoId)
+            const {
+              playerVars = {autoplay: 0}
+            } = this
+            const name = `${playerVars.autoplay ? 'load' : 'cue'}VideoById`
+            this.player[name](this.videoId)
+            console.log(name)
             this.$emit('ready', event.target)
             if (this.shouldMute) {
               this.player.mute()

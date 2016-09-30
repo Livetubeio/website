@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-s12">
         <div class="card" v-if="channeldata">
-          <youtube :player-vars="{controls: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
+          <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
           <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
           <div class="card-content">
             <span class="card-title">{{ channel }}</span>
@@ -96,8 +96,7 @@ export default {
       player: null,
       volume: 100,
       timelineInterval: null,
-      progress: 0,
-      playToggleIcon: 'pause_circle_filled'
+      progress: 0
     }
   },
   firebase: function() {
@@ -126,7 +125,6 @@ export default {
     },
     setPlayerState() {
       if (this.channeldata.playerstate === 1) {
-        this.playToggleIcon = 'pause_circle_filled'
         if (this.player) {
           this.player.playVideo()
         }
@@ -134,7 +132,6 @@ export default {
         if (this.player) {
           this.player.pauseVideo()
         }
-        this.playToggleIcon = 'play_circle_filled'
       }
     },
     playerReady(player) {
@@ -144,6 +141,12 @@ export default {
       this.player.addEventListener('onStateChange', (event) => {
         if (event.data === 0) {
           this.nextVideo()
+        }
+        if (event.data === 1) {
+          this.channeldata.playerstate = 1
+        }
+        if (event.data === 2) {
+          this.channeldata.playerstate = 2
         }
       })
     },
@@ -238,6 +241,13 @@ export default {
         return 'volume_off'
       }
       return 'volume_up'
+    },
+    playToggleIcon() {
+      if (this.channeldata.playerstate === 1) {
+        return 'pause_circle_filled'
+      } else {
+        return 'play_circle_filled'
+      }
     }
   },
   components: {
