@@ -56,7 +56,6 @@ export default {
     this.startTimeline()
 
     EventBus.addEventListener('addvideo', (data) => {
-      console.log('add', data)
       this.$firebaseRefs.videos.push(data.target)
     })
 
@@ -149,7 +148,6 @@ export default {
       this.timelineInterval = window.setInterval(() => {
         if (this.player) {
           this.progress = (this.player.getCurrentTime() / this.player.getDuration()) * 100
-          console.log(this.progress)
         }
       }, 1000)
     },
