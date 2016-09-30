@@ -9,7 +9,7 @@
           <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
           <div class="card-content">
             <span class="card-title">{{ channel }}</span>
-            <video-list-entry @click.native="selectVideo(video)" v-for="video in channeldata.videos" :active-video="channeldata.active" :video="video"></video-list-entry>
+            <video-list-entry @click.native="selectVideo(video)" v-for="(video, index) in videos" :active-video="channeldata.active" :index="index" :video="video"></video-list-entry>
           </div>
         </div>
       </div>
@@ -18,8 +18,15 @@
 
   <div class="controls">
     <div class="progress" :style="{width: progress + '%'}"></div>
+    <i class="material-icons dp48 player-control" @click="nextVideo">skip_previous</i>
     <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
-    <div id="volume"></div>
+    <i class="material-icons dp48 player-control" @click="nextVideo">skip_next</i>
+    <div class="volume-wrapper">
+      <i class="material-icons" @click="toggleVolume">{{ volumeIcon }}</i>
+      <div class="volume-container">
+        <div id="volume"></div>
+      </div>
+    </div>
   </div>
 
   <video-search></video-search>
@@ -156,6 +163,38 @@ export default {
       if (this.timelineInterval) {
         window.stopInterval(this.timelineInterval)
       }
+    },
+    nextVideo() {
+      if (!this.videos) {
+        return
+      }
+      // Search the current video
+      let current = this.videos.find((video) => {
+        return video.ytid === this.channeldata.active
+      })
+      if (!current) {
+        // Couldn't find the active video, go to the first one.
+        this.channeldata.active = this.videos[0].ytid
+        return
+      }
+
+      let nextPosition = this.videos.indexOf(current) + 1
+      if (nextPosition === this.videos.length) {
+        // This was the last video, go to the first one.
+        this.channeldata.active = this.videos[0].ytid
+        return
+      }
+
+      // Go to the next video
+      this.channeldata.active = this.videos[nextPosition].ytid
+    },
+    toggleVolume() {
+      if (this.volume === 0) {
+        this.volume = 100
+      } else {
+        this.volume = 0
+      }
+      document.getElementById('volume').noUiSlider.set(this.volume)
     }
   },
   computed: {
@@ -164,6 +203,12 @@ export default {
         return ''
       }
       return 'https://img.youtube.com/vi/' + this.channeldata.active + '/0.jpg'
+    },
+    volumeIcon() {
+      if (this.volume === 0) {
+        return 'volume_off'
+      }
+      return 'volume_up'
     }
   },
   components: {

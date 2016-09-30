@@ -17,11 +17,34 @@
 }
 
 
-#volume {
+.volume-wrapper {
     position: absolute;
     right: 10px;
-    top: 28px;
-    width: 200px;
+    top: 40px;
+    width: 250px;
+
+    .volume-container {
+      width: 200px;
+      position: absolute;
+      right: 10px;
+    }
+
+    .noUi-background {
+      background: #212121;
+    }
+
+    .noUi-handle {
+      background: #F3452B;
+    }
+
+    i.material-icons {
+      position: absolute;
+      left: 0;
+      font-size: 30px;
+      color: #212121;
+      top: -7px;
+      cursor: pointer;
+    }
 }
 
 .main-player {

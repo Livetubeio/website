@@ -2,9 +2,32 @@
   padding: 20px;
   margin-bottom: 0;
   cursor: pointer;
+  position: relative;
+
+  .index-indicator {
+    display: inline;
+  }
+
+  .play-icon {
+    display: none;
+    position: relative;
+    left: -8px;
+  }
+
+  .more-icon {
+    position: absolute;
+    right: 10px;
+  }
 
   &:hover {
     background: #EEEEEE;
+
+    .index-indicator {
+      display: none;
+    }
+    .play-icon {
+      display: inline;
+    }
   }
 
   &--active {
