@@ -16,7 +16,7 @@
   </div>
 
   <div class="controls">
-    <div class="progress" style="width: 67%;"></div>
+    <div class="progress" :style="{width: progress + '%'}"></div>
     <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
     <div id="volume"></div>
   </div>
@@ -48,7 +48,12 @@ var db = firebaseApp.database()
 export default {
   created() {
     this.channel = this.$route.params.channel
-    this.volume = window.localStorage.getItem('volume', 100)
+
+    if (window.localStorage.getItem('volume') !== null) {
+      this.volume = window.localStorage.getItem('volume', 100)
+    }
+
+    this.startTimeline()
 
     EventBus.addEventListener('addvideo', (data) => {
       console.log('add', data)
@@ -75,11 +80,16 @@ export default {
       })
     })
   },
+  destroyed() {
+    this.stopTimeline()
+  },
   data() {
     return {
       channel: null,
       player: null,
       volume: 100,
+      timelineInterval: null,
+      progress: 0,
       playToggleIcon: 'pause_circle_filled'
     }
   },
@@ -133,6 +143,19 @@ export default {
       window.localStorage.setItem('volume', this.volume)
       if (this.player) {
         this.player.setVolume(this.volume)
+      }
+    },
+    startTimeline() {
+      this.timelineInterval = window.setInterval(() => {
+        if (this.player) {
+          this.progress = (this.player.getCurrentTime() / this.player.getDuration()) * 100
+          console.log(this.progress)
+        }
+      }, 1000)
+    },
+    stopTimeline() {
+      if (this.timelineInterval) {
+        window.stopInterval(this.timelineInterval)
       }
     }
   },
