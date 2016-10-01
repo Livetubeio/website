@@ -26,13 +26,17 @@
 import EventBus from 'eventbusjs'
 import User from '../../helpers/User'
 export default {
-  props: ['subtitle'],
   data() {
     return {
-      user: null
+      user: null,
+      subtitle: null
     }
   },
   created() {
+    EventBus.addEventListener('setTitle', ({target}) => {
+      console.log(target)
+      this.subtitle = target
+    })
     EventBus.addEventListener('authchange', ({
       target
     }) => {

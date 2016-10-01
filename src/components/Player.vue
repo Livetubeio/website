@@ -9,7 +9,6 @@
             <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
             <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
             <div class="card-content">
-              <span class="card-title">{{ channel }}</span>
               <video-list-entry @click.native="selectVideo(video)" v-for="(video, index) in videos" :active-video="channeldata.active" :index="index" :video="video"></video-list-entry>
             </div>
           </div>
@@ -51,6 +50,7 @@ import db from '../helpers/Firebase'
 export default {
   created() {
     this.channel = this.getChannelName()
+    EventBus.dispatch('setTitle', window.atob(this.channel))
     this.setupFirebase()
 
     if (window.localStorage.getItem('volume') !== null) {
@@ -86,6 +86,7 @@ export default {
   },
   destroyed() {
     this.stopTimeline()
+    EventBus.dispatch('setTitle', null)
   },
   data() {
     return {
