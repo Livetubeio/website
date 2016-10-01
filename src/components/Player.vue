@@ -1,35 +1,37 @@
 <template>
-<div class="player-wrapper">
-  <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
-  <div class="container">
-    <div class="row">
-      <div class="col-s12">
-        <div class="card" v-if="channeldata">
-          <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
-          <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
-          <div class="card-content">
-            <span class="card-title">{{ channel }}</span>
-            <video-list-entry @click.native="selectVideo(video)" v-for="(video, index) in videos" :active-video="channeldata.active" :index="index" :video="video"></video-list-entry>
+<div>
+  <div class="player-wrapper">
+    <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-s12">
+          <div class="card" v-if="channeldata">
+            <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
+            <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
+            <div class="card-content">
+              <span class="card-title">{{ channel }}</span>
+              <video-list-entry @click.native="selectVideo(video)" v-for="(video, index) in videos" :active-video="channeldata.active" :index="index" :video="video"></video-list-entry>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <div class="progress" :style="{width: progress + '%'}"></div>
-    <i class="material-icons dp48 player-control" @click="prevVideo">skip_previous</i>
-    <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
-    <i class="material-icons dp48 player-control" @click="nextVideo">skip_next</i>
-    <div class="volume-wrapper">
-      <i class="material-icons" @click="toggleVolume">{{ volumeIcon }}</i>
-      <div class="volume-container">
-        <div id="volume"></div>
+    <div class="controls">
+      <div class="progress" :style="{width: progress + '%'}"></div>
+      <i class="material-icons dp48 player-control" @click="prevVideo">skip_previous</i>
+      <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
+      <i class="material-icons dp48 player-control" @click="nextVideo">skip_next</i>
+      <div class="volume-wrapper">
+        <i class="material-icons" @click="toggleVolume">{{ volumeIcon }}</i>
+        <div class="volume-container">
+          <div id="volume"></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <video-search></video-search>
+    <video-search></video-search>
+  </div>
 </div>
 </template>
 

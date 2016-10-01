@@ -5,6 +5,9 @@ import App from './App'
 import VueFire from 'vuefire'
 
 import Frontpage from './components/Frontpage'
+import About from './components/About'
+import Profile from './components/Profile'
+import Feedback from './components/Feedback'
 import Player from './components/Player'
 
 import VueRouter from 'vue-router'
@@ -21,7 +24,29 @@ const router = new VueRouter({
   }, {
     path: '/player/:channel',
     component: Player
+  }, {
+    path: '/feedback',
+    component: Feedback
+  }, {
+    path: '/about',
+    component: About
+  }, {
+    path: '/profile',
+    component: Profile
   }]
+})
+
+import User from './helpers/User'
+var loggedin = false
+router.beforeEach(function (from, to, next) {
+  if (loggedin) {
+    next()
+  } else {
+    loggedin = true
+    User.init().then(() => {
+      next()
+    })
+  }
 })
 
 new Vue(Vue.util.extend({

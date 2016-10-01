@@ -1,0 +1,28 @@
+.main-nav {
+  z-index: 2;
+  position: relative;
+  background: #F3452B;
+
+  .brand-logo {
+    margin-left: 10px;
+
+    .subtitle {
+      font-weight: lighter;
+      color: #bdbdbd;
+    }
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .profile-link a {
+    padding: 0;
+    height: 64px;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}
