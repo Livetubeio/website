@@ -15,8 +15,13 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 Vue.use(VueFire)
 
+let mode = 'hash'
+if (window.location.host === 'livetube.io') {
+  mode = 'history'
+}
+
 const router = new VueRouter({
-  // mode: 'history',
+  mode: mode,
   base: __dirname,
   routes: [{
     path: '/',
