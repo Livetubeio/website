@@ -67,11 +67,14 @@ export default {
       this.player.setSize(this.playerWidth || '640', this.playerHeight || '390')
     },
     update(videoId) {
-      const {
-        playerVars = {autoplay: 0}
-      } = this
-      const name = `${playerVars.autoplay ? 'load' : 'cue'}VideoById`
-      if (this.player && this.player[name]) {
+      if (!this.player) {
+        return
+      }
+      let name = 'cueVideoById'
+      if (this.player.getPlayerState() === 1) {
+        name = 'loadVideoById'
+      }
+      if (this.player[name]) {
         this.player[name](videoId)
       }
     }

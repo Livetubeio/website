@@ -15,10 +15,15 @@ Vue.use(VueFire)
 const router = new VueRouter({
   // mode: 'history',
   base: __dirname,
-  routes: [
-    { path: '/', component: Frontpage },
-    { path: '/player/:channel', component: Player }
-  ]
+  routes: [{
+    path: '/',
+    component: Frontpage
+  }, {
+    path: '/player/:channel',
+    component: Player
+  }]
 })
 
-new Vue(Vue.util.extend({ router }, App)).$mount('#app')
+new Vue(Vue.util.extend({
+  router
+}, App)).$mount('#app')

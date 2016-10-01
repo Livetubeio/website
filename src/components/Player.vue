@@ -39,19 +39,11 @@
 import VideoListEntry from './partials/player/VideoListEntry'
 import Youtube from './partials/player/Youtube'
 import VideoSearch from './partials/player/VideoSearch'
-import Firebase from 'firebase'
 import noUiSlider from 'nouislider'
 import Vue from 'vue'
 import EventBus from 'eventbusjs'
 
-var firebaseApp = Firebase.initializeApp({
-  apiKey: 'AIzaSyCZkM0D-k7Vi2cU-SlwBQx7aKGNRyqO-Xs',
-  authDomain: 'livetubeio-16323.firebaseapp.com',
-  databaseURL: 'https://livetubeio-16323.firebaseio.com',
-  storageBucket: '',
-  messagingSenderId: '204608398113'
-})
-var db = firebaseApp.database()
+import db from '../helpers/Firebase'
 
 export default {
   created() {
@@ -169,7 +161,7 @@ export default {
     },
     stopTimeline() {
       if (this.timelineInterval) {
-        window.stopInterval(this.timelineInterval)
+        window.clearInterval(this.timelineInterval)
       }
     },
     nextVideo() {
