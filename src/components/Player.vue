@@ -49,7 +49,11 @@ import db from '../helpers/Firebase'
 
 export default {
   created() {
-    this.channel = this.$route.params.channel
+    if (this.$route.params.owner) {
+      this.channel = window.btoa(this.$route.params.owner + '/' + this.$route.params.channel)
+    } else {
+      this.channel = window.btoa(this.$route.params.channel)
+    }
 
     if (window.localStorage.getItem('volume') !== null) {
       this.volume = window.localStorage.getItem('volume', 100)
@@ -97,24 +101,24 @@ export default {
     return {
       // simple syntax, bind as an array by default
       channeldata: {
-        source: db.ref('channels/' + this.$route.params.channel),
+        source: db.ref('channels/' + this.channel),
         asObject: true
       },
-      videos: db.ref('channels/' + this.$route.params.channel + '/videos')
+      videos: db.ref('channels/' + this.channel + '/videos')
     }
   },
   methods: {
     selectVideo(video) {
-      db.ref('channels/' + this.$route.params.channel + '/active').set(video.ytid)
+      db.ref('channels/' + this.channel + '/active').set(video.ytid)
     },
     toggleVideo() {
       if (this.channeldata.playerstate === 1) {
         // Pause the video
         this.player.pauseVideo()
-        db.ref('channels/' + this.$route.params.channel + '/playerstate').set(2)
+        db.ref('channels/' + this.channel + '/playerstate').set(2)
       } else {
         // Play the video
-        db.ref('channels/' + this.$route.params.channel + '/playerstate').set(1)
+        db.ref('channels/' + this.channel + '/playerstate').set(1)
       }
     },
     setPlayerState() {

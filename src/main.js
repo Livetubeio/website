@@ -25,6 +25,9 @@ const router = new VueRouter({
     path: '/player/:channel',
     component: Player
   }, {
+    path: '/player/:owner/:channel',
+    component: Player
+  }, {
     path: '/feedback',
     component: Feedback
   }, {

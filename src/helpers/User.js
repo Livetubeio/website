@@ -12,8 +12,6 @@ export default {
     return new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          console.log('Signed in', user)
-
           EventBus.dispatch('authchange', user)
 
           // User is signed in.
