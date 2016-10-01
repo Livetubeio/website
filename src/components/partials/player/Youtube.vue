@@ -63,6 +63,18 @@ export default {
     }
   },
   methods: {
+    onMuteAll() {
+      this.shouldMute = true
+      if (typeof this.player !== 'undefined' && this.player && this.player.mute) {
+        this.player.mute()
+      }
+    },
+    onUnMuteAll() {
+      this.shouldMute = false
+      if (typeof this.player !== 'undefined' && this.player && this.player.unMute) {
+        this.player.unMute()
+      }
+    },
     setSize() {
       this.player.setSize(this.playerWidth || '640', this.playerHeight || '390')
     },
@@ -91,18 +103,8 @@ export default {
         videoId
       } = this
 
-      EventBus.addEventListener('muteall', () => {
-        this.shouldMute = true
-        if (typeof this.player !== 'undefined' && this.player && this.player.mute) {
-          this.player.mute()
-        }
-      })
-      EventBus.addEventListener('unmuteall', () => {
-        this.shouldMute = false
-        if (typeof this.player !== 'undefined' && this.player && this.player.unMute) {
-          this.player.unMute()
-        }
-      })
+      EventBus.addEventListener('muteall', this.onMuteAll)
+      EventBus.addEventListener('unmuteall', this.onUnMuteAll)
 
       this.player = new YouTube.Player(this.elementId, {
         height,
@@ -138,6 +140,8 @@ export default {
     if (typeof this.player !== 'undefined' && this.player !== null) {
       this.player.destroy()
     }
+    EventBus.removeEventListener('muteall', this.onMuteAll)
+    EventBus.removeEventListener('unmuteall', this.onUnMuteAll)
     delete this.player
   }
 }

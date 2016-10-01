@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <video-search></video-search>
+    <video-search :channel="channel"></video-search>
   </div>
 </div>
 </template>
@@ -44,16 +44,14 @@ import VideoSearch from './partials/player/VideoSearch'
 import noUiSlider from 'nouislider'
 import Vue from 'vue'
 import EventBus from 'eventbusjs'
+import Api from '../helpers/Api'
 
 import db from '../helpers/Firebase'
 
 export default {
   created() {
-    if (this.$route.params.owner) {
-      this.channel = window.btoa(this.$route.params.owner + '/' + this.$route.params.channel)
-    } else {
-      this.channel = window.btoa(this.$route.params.channel)
-    }
+    this.channel = this.getChannelName()
+    this.setupFirebase()
 
     if (window.localStorage.getItem('volume') !== null) {
       this.volume = window.localStorage.getItem('volume', 100)
@@ -62,7 +60,8 @@ export default {
     this.startTimeline()
 
     EventBus.addEventListener('addvideo', (data) => {
-      this.$firebaseRefs.videos.push(data.target)
+      // this.$firebaseRefs.videos.push(data.target)
+      Api.addVideo(this.channel, data.target.ytid)
     })
 
     this.$watch('channeldata', () => {
@@ -94,31 +93,34 @@ export default {
       player: null,
       volume: 100,
       timelineInterval: null,
-      progress: 0
-    }
-  },
-  firebase: function() {
-    return {
-      // simple syntax, bind as an array by default
-      channeldata: {
-        source: db.ref('channels/' + this.channel),
-        asObject: true
-      },
-      videos: db.ref('channels/' + this.channel + '/videos')
+      progress: 0,
+      channeldata: {},
+      videos: []
     }
   },
   methods: {
+    setupFirebase() {
+      this.$bindAsObject('channeldata', db.ref('channels/' + this.channel))
+      this.$bindAsArray('videos', db.ref('channels/' + this.channel + '/videos'))
+    },
+    getChannelName() {
+      if (this.$route.params.owner) {
+        return window.btoa(this.$route.params.owner + '/' + this.$route.params.channel)
+      } else {
+        return window.btoa(this.$route.params.channel)
+      }
+    },
     selectVideo(video) {
-      db.ref('channels/' + this.channel + '/active').set(video.ytid)
+      Api.setActiveVideo(this.channel, video.ytid)
     },
     toggleVideo() {
       if (this.channeldata.playerstate === 1) {
         // Pause the video
         this.player.pauseVideo()
-        db.ref('channels/' + this.channel + '/playerstate').set(2)
+        Api.setPlayerState(this.channel, 2)
       } else {
         // Play the video
-        db.ref('channels/' + this.channel + '/playerstate').set(1)
+        Api.setPlayerState(this.channel, 1)
       }
     },
     setPlayerState() {

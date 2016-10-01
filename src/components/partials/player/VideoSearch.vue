@@ -3,7 +3,7 @@
   <div class="modal-content">
     <input @keyup="search" v-model="query" type="search" class="video-search-bar" placeholder="Search YouTube">
 
-    <video-search-result :result="result" v-for="result in results"></video-search-result>
+    <video-search-result :channel="channel" :result="result" v-for="result in results"></video-search-result>
 
   </div>
 </div>
@@ -15,6 +15,7 @@ import VideoSearchResult from './VideoSearchResult.vue'
 import _ from 'lodash'
 
 export default {
+  props: ['channel'],
   data() {
     return {
       query: null,

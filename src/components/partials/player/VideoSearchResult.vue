@@ -15,9 +15,10 @@
 /* global $ */
 import VideoPreview from './VideoPreview.vue'
 import EventBus from 'eventbusjs'
+import Api from '../../../helpers/Api'
 
 export default {
-  props: ['result'],
+  props: ['result', 'channel'],
   data() {
     return {
       preview: false
@@ -35,10 +36,7 @@ export default {
     addvideo() {
       // TODO: add the video
       this.preview = false
-      EventBus.dispatch('addvideo', {
-        title: this.result.snippet.title,
-        ytid: this.result.id.videoId
-      })
+      Api.addVideo(this.channel, this.result.id.videoId)
       $('#video-search').closeModal()
     }
   },
