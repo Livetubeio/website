@@ -1,0 +1,49 @@
+.genres {
+  text-align: center;
+  padding: 16px;
+}
+
+.genre {
+  width: 250px;
+  display: inline-block;
+  height: 250px;
+  text-align: left;
+  margin: 5px;
+  position: relative;
+  background-size: cover;
+  background-position: center center;
+  cursor: pointer;
+  transition: transform 0.1s ease-in;
+
+  &:hover {
+    transform: scale(1.2,1.2);
+    z-index: 10;
+  }
+
+  .title {
+    background: rgba(0,0,0,0.5);
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+  }
+}
+
+.house-animation:hover {
+  animation-name: house-animation;
+  animation-duration: .15s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes house-animation {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(100deg);
+  }
+}

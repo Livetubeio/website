@@ -58,17 +58,6 @@
         </section>
       </div>
 
-      <div style="text-align: center">
-        <h2>Create your own channel (it's free!)</h2>
-        <div class="row">
-          <div class="col moffset-4 col m3">
-            <input type="text" class="form-control input-lg create-channel-input" placeholder="Enter your channel name">
-          </div>
-          <div class="col m1">
-            go button
-          </div>
-        </div>
-      </div>
     </div>
   </section>
   <section class="details-section">

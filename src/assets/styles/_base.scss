@@ -11,3 +11,32 @@ html, body {
     min-height: 100%;
   }
 }
+
+.fullheight {
+  height: 100%;
+}
+
+.content-wrapper {
+  height: 100%;
+
+  &.padded {
+    padding-top: 20px;
+  }
+
+  &.dark {
+    background: #121212;
+
+    .header {
+      color: white;
+      text-align: center;
+
+      h1 {
+        color: white;
+      }
+
+      p {
+        opacity: 0.5;
+      }
+    }
+  }
+}

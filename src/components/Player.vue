@@ -1,6 +1,8 @@
 <template>
-<div>
-  <div class="player-wrapper">
+<div class="fullheight">
+  <div v-if="videos === null">loading</div>
+  <empty-channel v-if="videos !== null && !videos.length" can-edit="canEdit"></empty-channel>
+  <div v-if="videos !== null && videos.length" class="player-wrapper">
     <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
     <div class="container">
       <div class="row">
@@ -11,7 +13,7 @@
             <a v-if="canEdit" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
 
             <div class="card-content">
-              <video-list-entry v-for="(video, index) in videos" :active-video="channeldata.active" :channel="channel" :index="index" :video="video"></video-list-entry>
+              <video-list-entry v-for="(video, index) in videos" :active-video="channeldata.active" :channel="channel" :index="index" :video="video" :can-edit="canEdit"></video-list-entry>
             </div>
           </div>
         </div>
@@ -42,6 +44,7 @@
 import VideoListEntry from './partials/player/VideoListEntry'
 import Youtube from './partials/player/Youtube'
 import VideoSearch from './partials/player/VideoSearch'
+import EmptyChannel from './partials/player/EmptyChannel'
 import noUiSlider from 'nouislider'
 import Vue from 'vue'
 import EventBus from 'eventbusjs'
@@ -59,7 +62,7 @@ export default {
       timelineInterval: null,
       progress: 0,
       channeldata: {},
-      videos: [],
+      videos: null,
       canEdit: false
     }
   },
@@ -259,7 +262,8 @@ export default {
   components: {
     VideoListEntry,
     Youtube,
-    VideoSearch
+    VideoSearch,
+    EmptyChannel
   }
 }
 </script>

@@ -10,6 +10,7 @@ export default {
   },
   setPlayerState(channel, state) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
+      console.log(idToken)
       $.ajax({
         method: 'PUT',
         processData: false,
@@ -26,6 +27,7 @@ export default {
   },
   setActiveVideo(channel, ytid) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
+      console.log(idToken)
       $.ajax({
         method: 'PUT',
         processData: false,

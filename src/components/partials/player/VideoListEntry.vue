@@ -7,7 +7,7 @@
   <div class="col s10">
     {{ video.title }}
   </div>
-  <div class="col s1">
+  <div class="col s1" v-if="canEdit">
     <i class="more-icon material-icons right" ref="moreicon">more_vert</i>
     <div class="more-menu z-depth-1" v-if="showMore">
       <ul>
@@ -22,7 +22,7 @@
 /* global $ */
 import Api from '../../../helpers/Api'
 export default {
-  props: ['video', 'activeVideo', 'index', 'channel'],
+  props: ['video', 'activeVideo', 'index', 'channel', 'canEdit'],
   data() {
     return {
       showMore: false
