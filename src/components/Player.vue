@@ -7,7 +7,9 @@
         <div class="col-s12">
           <div class="card" v-if="channeldata">
             <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
-            <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
+            <div class="player-overlay" @click="toggleVolume"></div>
+            <a v-if="canEdit" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
+
             <div class="card-content">
               <video-list-entry v-for="(video, index) in videos" :active-video="channeldata.active" :channel="channel" :index="index" :video="video"></video-list-entry>
             </div>
@@ -16,11 +18,11 @@
       </div>
     </div>
 
-    <div class="controls">
+    <div class="controls" :class="{'cant-edit': !canEdit}">
       <div class="progress" :style="{width: progress + '%'}"></div>
-      <i class="material-icons dp48 player-control" @click="prevVideo">skip_previous</i>
-      <i class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
-      <i class="material-icons dp48 player-control" @click="nextVideo">skip_next</i>
+      <i v-if="canEdit" class="material-icons dp48 player-control" @click="prevVideo">skip_previous</i>
+      <i v-if="canEdit" class="material-icons dp48 play-toggle" @click="toggleVideo">{{ playToggleIcon }}</i>
+      <i v-if="canEdit" class="material-icons dp48 player-control" @click="nextVideo">skip_next</i>
       <div class="volume-wrapper">
         <i class="material-icons" @click="toggleVolume">{{ volumeIcon }}</i>
         <div class="volume-container">
@@ -29,7 +31,7 @@
       </div>
     </div>
 
-    <video-search :channel="channel"></video-search>
+    <video-search v-if="canEdit" :channel="channel"></video-search>
   </div>
 </div>
 </template>
@@ -44,14 +46,31 @@ import noUiSlider from 'nouislider'
 import Vue from 'vue'
 import EventBus from 'eventbusjs'
 import Api from '../helpers/Api'
+import User from '../helpers/User'
 
 import db from '../helpers/Firebase'
 
 export default {
+  data() {
+    return {
+      channel: null,
+      player: null,
+      volume: 100,
+      timelineInterval: null,
+      progress: 0,
+      channeldata: {},
+      videos: [],
+      canEdit: false
+    }
+  },
   created() {
     this.channel = this.getChannelName()
     EventBus.dispatch('setTitle', window.atob(this.channel))
     this.setupFirebase()
+
+    User.checkAuth(window.atob(this.channel)).then((isAllowed) => {
+      this.canEdit = isAllowed
+    })
 
     if (window.localStorage.getItem('volume') !== null) {
       this.volume = window.localStorage.getItem('volume', 100)
@@ -87,17 +106,6 @@ export default {
   destroyed() {
     this.stopTimeline()
     EventBus.dispatch('setTitle', null)
-  },
-  data() {
-    return {
-      channel: null,
-      player: null,
-      volume: 100,
-      timelineInterval: null,
-      progress: 0,
-      channeldata: {},
-      videos: []
-    }
   },
   methods: {
     setupFirebase() {

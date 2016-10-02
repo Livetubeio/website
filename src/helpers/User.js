@@ -1,5 +1,7 @@
 /* global firebase */
+/* global $ */
 import EventBus from 'eventbusjs'
+import _ from 'lodash'
 export default {
   user: null,
   credential: null,
@@ -41,6 +43,19 @@ export default {
       }, function(error) {
         console.log(error)
         resolve('Stuff worked!')
+      })
+    })
+  },
+  checkAuth(channel) {
+    return new Promise((resolve, reject) => {
+      $.get('https://api.github.com/user?access_token=' + this.credential.accessToken).then((userdata) => {
+        $.get(userdata.repos_url).then((repos) => {
+          if (_.find(repos, ({full_name}) => full_name === channel)) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        })
       })
     })
   }

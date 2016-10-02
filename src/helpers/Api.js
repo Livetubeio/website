@@ -9,24 +9,34 @@ export default {
     }))
   },
   setPlayerState(channel, state) {
-    $.ajax({
-      method: 'PUT',
-      processData: false,
-      url: API_ROOT + 'channels',
-      data: JSON.stringify({
-        channel: channel,
-        playerstate: state
+    window.firebase.auth().currentUser.getToken().then((idToken) => {
+      $.ajax({
+        method: 'PUT',
+        processData: false,
+        url: API_ROOT + 'channels',
+        data: JSON.stringify({
+          channel: channel,
+          playerstate: state
+        }),
+        headers: {
+          'X-LIVETUBE-AUTH': idToken
+        }
       })
     })
   },
   setActiveVideo(channel, ytid) {
-    $.ajax({
-      method: 'PUT',
-      processData: false,
-      url: API_ROOT + 'channels',
-      data: JSON.stringify({
-        channel: channel,
-        active: ytid
+    window.firebase.auth().currentUser.getToken().then((idToken) => {
+      $.ajax({
+        method: 'PUT',
+        processData: false,
+        url: API_ROOT + 'channels',
+        data: JSON.stringify({
+          channel: channel,
+          active: ytid
+        }),
+        headers: {
+          'X-LIVETUBE-AUTH': idToken
+        }
       })
     })
   }

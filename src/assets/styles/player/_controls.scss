@@ -36,6 +36,42 @@
     background: #F3452B;
     margin: 0;
     border-radius: 0;
-    transition: width .1s linear;
+    transition: width 0.1s linear;
+  }
+}
+
+.volume-wrapper {
+  position: absolute;
+  right: 10px;
+  top: 40px;
+  width: 250px;
+
+  .cant-edit & {
+    right: auto;
+    margin-left: -125px;
+    left: 50%;
+  }
+
+  .volume-container {
+    width: 200px;
+    position: absolute;
+    right: 10px;
+  }
+
+  .noUi-background {
+    background: #212121;
+  }
+
+  .noUi-handle {
+    background: #F3452B;
+  }
+
+  i.material-icons {
+    position: absolute;
+    left: 0;
+    font-size: 30px;
+    color: #212121;
+    top: -7px;
+    cursor: pointer;
   }
 }

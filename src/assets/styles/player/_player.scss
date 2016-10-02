@@ -10,41 +10,18 @@
     }
 }
 
+.player-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 390px;
+}
+
 .search-trigger {
     position: absolute;
     right: 10px;
     margin-top: -40px;
-}
-
-
-.volume-wrapper {
-    position: absolute;
-    right: 10px;
-    top: 40px;
-    width: 250px;
-
-    .volume-container {
-      width: 200px;
-      position: absolute;
-      right: 10px;
-    }
-
-    .noUi-background {
-      background: #212121;
-    }
-
-    .noUi-handle {
-      background: #F3452B;
-    }
-
-    i.material-icons {
-      position: absolute;
-      left: 0;
-      font-size: 30px;
-      color: #212121;
-      top: -7px;
-      cursor: pointer;
-    }
 }
 
 .main-player {
