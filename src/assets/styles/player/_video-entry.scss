@@ -40,3 +40,28 @@
     }
   }
 }
+
+.more-menu {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  background: white;
+  width: 200px;
+  padding: 10px 0;
+
+  ul {
+    list-style: none;
+    margin: 0;
+  }
+
+  li {
+    margin: 0;
+    padding: 10px 20px;
+    color: black;
+    font-weight: normal;
+
+    &:hover {
+      background: #eeeeee;
+    }
+  }
+}

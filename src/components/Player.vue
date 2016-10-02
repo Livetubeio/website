@@ -9,7 +9,7 @@
             <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
             <a href="#" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
             <div class="card-content">
-              <video-list-entry @click.native="selectVideo(video)" v-for="(video, index) in videos" :active-video="channeldata.active" :index="index" :video="video"></video-list-entry>
+              <video-list-entry v-for="(video, index) in videos" :active-video="channeldata.active" :channel="channel" :index="index" :video="video"></video-list-entry>
             </div>
           </div>
         </div>
@@ -110,9 +110,6 @@ export default {
       } else {
         return window.btoa(this.$route.params.channel)
       }
-    },
-    selectVideo(video) {
-      Api.setActiveVideo(this.channel, video.ytid)
     },
     toggleVideo() {
       if (this.channeldata.playerstate === 1) {
