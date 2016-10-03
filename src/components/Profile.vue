@@ -54,13 +54,13 @@ export default {
   created() {
     this.user = User.user
     $.get('https://api.github.com/user?access_token=' + User.credential.accessToken).then((userdata) => {
-      $.get(userdata.repos_url).then((repos) => {
+      $.get(userdata.repos_url + '?access_token=' + User.credential.accessToken).then((repos) => {
         this.repos = repos
       })
-      $.get(userdata.organizations_url).then((orgs) => {
+      $.get(userdata.organizations_url + '?access_token=' + User.credential.accessToken).then((orgs) => {
         this.orgs = orgs
         this.orgs.forEach((org, idx) => {
-          $.get(org.repos_url).then((repos) => {
+          $.get(org.repos_url + '?access_token=' + User.credential.accessToken).then((repos) => {
             Vue.set(this.orgs[idx], 'repos', repos)
           })
         })

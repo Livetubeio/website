@@ -1,8 +1,7 @@
 <template>
 <div class="fullheight">
-  <div v-if="videos === null">loading</div>
-  <empty-channel v-if="videos !== null && !videos.length" :channel="channel" :can-edit="canEdit"></empty-channel>
-  <div v-if="videos !== null && videos.length" class="player-wrapper">
+  <empty-channel v-if="hasLoaded && videos.length === 0" :channel="channel" :can-edit="canEdit"></empty-channel>
+  <div v-if="hasLoaded && videos.length > 0" class="player-wrapper">
     <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
     <div class="container">
       <div class="row">
@@ -62,8 +61,9 @@ export default {
       timelineInterval: null,
       progress: 0,
       channeldata: {},
-      videos: null,
-      canEdit: false
+      videos: [],
+      canEdit: false,
+      hasLoaded: false
     }
   },
   created() {
@@ -112,6 +112,11 @@ export default {
   },
   methods: {
     setupFirebase() {
+      this.$watch('channeldata', () => {
+        if (typeof this.channeldata['.key'] !== 'undefined') {
+          this.hasLoaded = true
+        }
+      })
       this.$bindAsObject('channeldata', db.ref('channels/' + this.channel))
       this.$bindAsArray('videos', db.ref('channels/' + this.channel + '/videos'))
     },

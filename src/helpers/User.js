@@ -5,6 +5,7 @@ import _ from 'lodash'
 export default {
   user: null,
   credential: null,
+  repos: null,
   setCredential(credential) {
     this.credential = credential
     window.localStorage.setItem('gh-credential', JSON.stringify(credential))
@@ -48,13 +49,41 @@ export default {
   },
   checkAuth(channel) {
     return new Promise((resolve, reject) => {
+      if (this.repos) {
+        if (_.find(this.repos, ({full_name}) => full_name === channel)) {
+          resolve(true)
+          return
+        } else {
+          resolve(false)
+          return
+        }
+      }
+
+      let collections = []
+      // Fetch the user's repositories
       $.get('https://api.github.com/user?access_token=' + this.credential.accessToken).then((userdata) => {
-        $.get(userdata.repos_url).then((repos) => {
-          if (_.find(repos, ({full_name}) => full_name === channel)) {
-            resolve(true)
-          } else {
-            resolve(false)
-          }
+        collections.push($.get(userdata.repos_url + '?access_token=' + this.credential.accessToken))
+        // Fetch the user's organizations
+        $.get(userdata.organizations_url + '?access_token=' + this.credential.accessToken).then(orgs => {
+          // Add all organization's repositories to our collection of repositories
+          orgs.forEach((org, idx) => {
+            collections.push($.get(org.repos_url + '?access_token=' + this.credential.accessToken))
+          })
+
+          // Fetch the data from our collection
+          Promise.all(collections).then(values => {
+            // Add all repositories
+            this.repos = []
+            values.forEach(repoList => {
+              this.repos = this.repos.concat(repoList)
+            })
+            // Check if the user is allowed to edit the given repo
+            if (_.find(this.repos, ({full_name}) => full_name === channel)) {
+              resolve(true)
+            } else {
+              resolve(false)
+            }
+          })
         })
       })
     })
