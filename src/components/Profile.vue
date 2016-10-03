@@ -7,7 +7,7 @@
       <div class="col s12 m6">
         <h1>Your repositories</h1>
         <div class="collection">
-          <router-link :to="'/player/' + repo.full_name" class="collection-item" v-for="repo in sortedRepos">
+          <router-link :to="'/' + repo.full_name" class="collection-item" v-for="repo in sortedRepos">
             {{ repo.full_name }}
             <div class="secondary-content" v-if="repo.fork">
               <div class="chip">
@@ -22,7 +22,7 @@
         <template v-for="org in orgs">
           <h2><img class="org-avatar" :src="org.avatar_url">{{ org.login }}</h2>
           <div class="collection" v-if="org.repos">
-            <router-link :to="'/player/' + repo.full_name" class="collection-item" v-for="repo in org.repos">
+            <router-link :to="'/' + repo.full_name" class="collection-item" v-for="repo in org.repos">
               {{ repo.full_name }}
               <div class="secondary-content" v-if="repo.fork">
                 <div class="chip">

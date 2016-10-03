@@ -26,14 +26,14 @@ const router = new VueRouter({
     path: '/',
     component: Frontpage
   }, {
-    path: '/player/:owner/:channel',
-    component: Player
-  }, {
     path: '/about',
     component: About
   }, {
     path: '/profile',
     component: Profile
+  }, {
+    path: '/:owner/:channel',
+    component: Player
   }]
 })
 

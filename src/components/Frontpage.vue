@@ -24,7 +24,7 @@
     <h1 style="text-align: center">Now playing</h1>
     <ul class="frontpage-top-channel-list">
       <li v-for="(channel, channelname) in randomChannels">
-        <router-link :to="'/player/' + decodeChannelName(channelname)" class="top-channel-link">
+        <router-link :to="'/' + decodeChannelName(channelname)" class="top-channel-link">
             <div class="top-channel-wrapper">
                 <div class="top-channel">
                     <img :src="'https://img.youtube.com/vi/' + channel.active + '/0.jpg'">
