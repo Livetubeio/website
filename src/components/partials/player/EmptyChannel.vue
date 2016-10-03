@@ -6,7 +6,7 @@
       <p>Start by adding some videos from your favorite genre.</p>
     </div>
     <div class="genres">
-      <div class="genre" v-for="(genre, genreid) in genres" :style="{'background-image': preview(genreid)}" :class="{'house-animation': genreid === 'House'}"><span class="title">{{ genreid }}</span></div>
+      <div @click="addGenre(genreid)" class="genre" v-for="(genre, genreid) in genres" :style="{'background-image': preview(genreid)}" :class="{'house-animation': genreid === 'House'}"><span class="title">{{ genreid }}</span></div>
     </div>
   </div>
   <div v-if="!canEdit">
@@ -17,8 +17,9 @@
 </template>
 
 <script>
+import Api from '../../../helpers/Api'
 export default {
-  props: ['canEdit'],
+  props: ['canEdit', 'channel'],
   data() {
     return {
       'genres': {
@@ -48,6 +49,11 @@ export default {
   methods: {
     preview(genre) {
       return 'url(\'https://img.youtube.com/vi/' + this.genres[genre][0] + '/maxresdefault.jpg\')'
+    },
+    addGenre(genre) {
+      this.genres[genre].forEach(video => {
+        Api.addVideo(this.channel, video)
+      })
     }
   }
 }

@@ -3,10 +3,19 @@ const API_ROOT = 'https://livetubeio-16323.appspot.com/'
 /* global $ */
 export default {
   addVideo(channel, ytid) {
-    $.post(API_ROOT + 'videos', JSON.stringify({
-      channel: channel,
-      ytid: ytid
-    }))
+    window.firebase.auth().currentUser.getToken().then((idToken) => {
+      $.ajax({
+        method: 'POST',
+        url: API_ROOT + 'videos',
+        data: JSON.stringify({
+          channel: channel,
+          ytid: ytid
+        }),
+        headers: {
+          'X-LIVETUBE-AUTH': idToken
+        }
+      })
+    })
   },
   setPlayerState(channel, state) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {

@@ -4,7 +4,7 @@
     <span class="brand-logo"><router-link to="/">Livetube.io</router-link><span v-if="subtitle" class="subtitle"> / {{ subtitle }}</span></span>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
       <li>
-        <router-link to="/feedback" class="top-channel-link">Feedback</router-link>
+        <a href="https://sopamo.typeform.com/to/EmMHSq" target="_blank" class="top-channel-link">Feedback</a>
       </li>
       <li>
         <router-link to="/about" class="top-channel-link">About</router-link>

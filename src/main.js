@@ -7,7 +7,6 @@ import VueFire from 'vuefire'
 import Frontpage from './components/Frontpage'
 import About from './components/About'
 import Profile from './components/Profile'
-import Feedback from './components/Feedback'
 import Player from './components/Player'
 
 import VueRouter from 'vue-router'
@@ -27,14 +26,8 @@ const router = new VueRouter({
     path: '/',
     component: Frontpage
   }, {
-    path: '/player/:channel',
-    component: Player
-  }, {
     path: '/player/:owner/:channel',
     component: Player
-  }, {
-    path: '/feedback',
-    component: Feedback
   }, {
     path: '/about',
     component: About

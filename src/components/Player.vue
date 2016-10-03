@@ -1,7 +1,7 @@
 <template>
 <div class="fullheight">
   <div v-if="videos === null">loading</div>
-  <empty-channel v-if="videos !== null && !videos.length" can-edit="canEdit"></empty-channel>
+  <empty-channel v-if="videos !== null && !videos.length" :channel="channel" :can-edit="canEdit"></empty-channel>
   <div v-if="videos !== null && videos.length" class="player-wrapper">
     <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
     <div class="container">
