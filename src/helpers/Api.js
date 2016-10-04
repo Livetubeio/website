@@ -1,35 +1,35 @@
-const API_ROOT = 'https://livetubeio-16323.appspot.com/'
+const API_ROOT = 'http://134.60.117.8:8080/'
 
 /* global $ */
+import User from './User'
 export default {
   addVideo(channel, ytid) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
       $.ajax({
         method: 'POST',
-        url: API_ROOT + 'videos',
+        url: API_ROOT + '/channels/' + channel + '/videos',
         data: JSON.stringify({
-          channel: channel,
           ytid: ytid
         }),
         headers: {
-          'X-LIVETUBE-AUTH': idToken
+          'X-LIVETUBE-AUTH': idToken,
+          'X-GITHUB-AUTH': User.credential.accessToken
         }
       })
     })
   },
   setPlayerState(channel, state) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
-      console.log(idToken)
       $.ajax({
         method: 'PUT',
         processData: false,
-        url: API_ROOT + 'channels',
+        url: API_ROOT + 'channels/' + channel,
         data: JSON.stringify({
-          channel: channel,
           playerstate: state
         }),
         headers: {
-          'X-LIVETUBE-AUTH': idToken
+          'X-LIVETUBE-AUTH': idToken,
+          'X-GITHUB-AUTH': User.credential.accessToken
         }
       })
     })
@@ -40,13 +40,13 @@ export default {
       $.ajax({
         method: 'PUT',
         processData: false,
-        url: API_ROOT + 'channels',
+        url: API_ROOT + 'channels/' + channel,
         data: JSON.stringify({
-          channel: channel,
           active: ytid
         }),
         headers: {
-          'X-LIVETUBE-AUTH': idToken
+          'X-LIVETUBE-AUTH': idToken,
+          'X-GITHUB-AUTH': User.credential.accessToken
         }
       })
     })
