@@ -89,20 +89,27 @@ export default {
     this.$watch('channeldata', () => {
       this.setPlayerState()
     })
-
-    Vue.nextTick(() => {
-      var slider = document.getElementById('volume')
-      noUiSlider.create(slider, {
-        start: this.volume,
-        step: 1,
-        range: {
-          'min': 0,
-          'max': 100
+    this.$watch('videos', () => {
+      if (!this.videos) {
+        return
+      }
+      console.log(this.videos)
+      Vue.nextTick(() => {
+        if (Object.keys(this.videos).length > 0) {
+          var slider = document.getElementById('volume')
+          noUiSlider.create(slider, {
+            start: this.volume,
+            step: 1,
+            range: {
+              'min': 0,
+              'max': 100
+            }
+          })
+          slider.noUiSlider.on('update', (values) => {
+            this.volume = parseInt(values[0])
+            this.setVolume()
+          })
         }
-      })
-      slider.noUiSlider.on('update', (values) => {
-        this.volume = parseInt(values[0])
-        this.setVolume()
       })
     })
   },
