@@ -1,18 +1,18 @@
 <template>
 <div class="fullheight">
-  <empty-channel v-if="hasLoaded && videos.length === 0" :channel="channel" :can-edit="canEdit"></empty-channel>
-  <div v-if="hasLoaded && videos.length > 0" class="player-wrapper">
+  <empty-channel v-if="hasLoaded && videoCount === 0" :channel="channel" :can-edit="canEdit"></empty-channel>
+  <div v-if="hasLoaded && videoCount > 0" class="player-wrapper">
     <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
     <div class="container">
       <div class="row">
         <div class="col-s12">
           <div class="card" v-if="channeldata">
-            <youtube :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="channeldata.active"></youtube>
+            <youtube v-if="activeVideoId" :player-vars="{controls: 0, autoplay: 0}" @ready="playerReady" class="main-player" :video-id="activeVideoId"></youtube>
             <div class="player-overlay" @click="toggleVolume"></div>
             <a v-if="canEdit" class="search-trigger btn-floating btn-large waves-effect waves-light red" @click.prevent="showVideoSearch"><i class="material-icons">add</i></a>
 
             <div class="card-content">
-              <video-list-entry v-for="(video, index) in videos" :active-video="channeldata.active" :channel="channel" :index="index" :video="video" :can-edit="canEdit"></video-list-entry>
+              <video-list-entry v-if="index != '.key'" v-for="(video, index) in videos" :video-key="index" :active-video="channeldata.active" :channel="channel" :index="videoPosition(index)" :video="video" :can-edit="canEdit"></video-list-entry>
             </div>
           </div>
         </div>
@@ -118,7 +118,10 @@ export default {
         }
       })
       this.$bindAsObject('channeldata', db.ref('channels/' + this.channel))
-      this.$bindAsArray('videos', db.ref('channels/' + this.channel + '/videos'))
+      this.$bindAsObject('videos', db.ref('channels/' + this.channel + '/videos'))
+    },
+    videoPosition(index) {
+      return Object.keys(this.videos).indexOf(index)
     },
     getChannelName() {
       if (this.$route.params.owner) {
@@ -154,7 +157,7 @@ export default {
       this.setVolume()
       this.player.addEventListener('onStateChange', (event) => {
         if (event.data === 0) {
-          this.nextVideo()
+          Api.notifyVideoEnded(this.channel)
         }
         if (event.data === 1) {
           this.channeldata.playerstate = 1
@@ -190,49 +193,44 @@ export default {
       if (!this.videos) {
         return
       }
-      // Search the current video
-      let current = this.videos.find((video) => {
-        return video.ytid === this.channeldata.active
+
+      let nextVideo = null
+      let lastVideo = null
+      $.each(this.videos, (idx, video) => {
+        if (lastVideo === this.channeldata.active && idx !== '.key') {
+          nextVideo = idx
+        }
+        lastVideo = idx
       })
-      if (!current) {
-        // Couldn't find the active video, go to the first one.
-        this.channeldata.active = this.videos[0].ytid
-        return
-      }
-
-      let nextPosition = this.videos.indexOf(current) + 1
-      if (nextPosition === this.videos.length) {
+      if (!nextVideo) {
         // This was the last video, go to the first one.
-        this.channeldata.active = this.videos[0].ytid
+        this.channeldata.active = Object.keys(this.videos)[0]
         return
       }
-
       // Go to the next video
-      this.channeldata.active = this.videos[nextPosition].ytid
+      this.channeldata.active = nextVideo
     },
     prevVideo() {
       if (!this.videos) {
         return
       }
-      // Search the current video
-      let current = this.videos.find((video) => {
-        return video.ytid === this.channeldata.active
-      })
-      if (!current) {
-        // Couldn't find the active video, go to the first one.
-        this.channeldata.active = this.videos[0].ytid
-        return
-      }
 
-      let nextPosition = this.videos.indexOf(current) - 1
-      if (nextPosition === -1) {
+      let nextVideo = null
+      let lastVideo = null
+      $.each(this.videos, (idx, video) => {
+        if (idx === this.channeldata.active) {
+          nextVideo = lastVideo
+        }
+        lastVideo = idx
+      })
+      if (!nextVideo) {
         // This was the first video, go to the last one.
-        this.channeldata.active = this.videos[this.videos.length - 1].ytid
+        this.channeldata.active = Object.keys(this.videos)[Object.keys(this.videos).length - 2]
         return
       }
 
       // Go to the next video
-      this.channeldata.active = this.videos[nextPosition].ytid
+      this.channeldata.active = nextVideo
     },
     toggleVolume() {
       if (this.volume === 0) {
@@ -245,10 +243,10 @@ export default {
   },
   computed: {
     backgroundImage() {
-      if (!this.channeldata.active) {
+      if (!this.activeVideoId) {
         return ''
       }
-      return 'https://img.youtube.com/vi/' + this.channeldata.active + '/0.jpg'
+      return 'https://img.youtube.com/vi/' + this.activeVideoId + '/0.jpg'
     },
     volumeIcon() {
       if (this.volume === 0) {
@@ -262,6 +260,18 @@ export default {
       } else {
         return 'play_circle_filled'
       }
+    },
+    activeVideoId() {
+      if (!this.channeldata || !this.channeldata.active || !this.videos || !this.videos[this.channeldata.active]) {
+        return false
+      }
+      return this.videos[this.channeldata.active].ytid
+    },
+    videoCount() {
+      if (!this.videos) {
+        return 0
+      }
+      return Object.keys(this.videos).length
     }
   },
   components: {

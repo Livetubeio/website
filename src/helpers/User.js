@@ -2,12 +2,14 @@
 /* global $ */
 import EventBus from 'eventbusjs'
 import _ from 'lodash'
+import Api from './Api'
 export default {
   user: null,
   credential: null,
   repos: null,
   setCredential(credential) {
     this.credential = credential
+    Api.notifyLogin()
     window.localStorage.setItem('gh-credential', JSON.stringify(credential))
   },
   init() {

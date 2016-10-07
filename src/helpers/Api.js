@@ -1,4 +1,4 @@
-const API_ROOT = 'http://134.60.117.8:8080/'
+const API_ROOT = 'https://livetubeio-16323.appspot.com/'
 
 /* global $ */
 import User from './User'
@@ -7,10 +7,22 @@ export default {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
       $.ajax({
         method: 'POST',
-        url: API_ROOT + '/channels/' + channel + '/videos',
+        url: API_ROOT + 'channels/' + channel + '/videos',
         data: JSON.stringify({
           ytid: ytid
         }),
+        headers: {
+          'X-LIVETUBE-AUTH': idToken,
+          'X-GITHUB-AUTH': User.credential.accessToken
+        }
+      })
+    })
+  },
+  notifyVideoEnded(channel) {
+    window.firebase.auth().currentUser.getToken().then((idToken) => {
+      $.ajax({
+        method: 'POST',
+        url: API_ROOT + 'channels/' + channel + '/update',
         headers: {
           'X-LIVETUBE-AUTH': idToken,
           'X-GITHUB-AUTH': User.credential.accessToken
@@ -34,7 +46,19 @@ export default {
       })
     })
   },
-  setActiveVideo(channel, ytid) {
+  notifyLogin() {
+    window.firebase.auth().currentUser.getToken().then((idToken) => {
+      $.ajax({
+        method: 'POST',
+        url: API_ROOT + 'login',
+        headers: {
+          'X-LIVETUBE-AUTH': idToken,
+          'X-GITHUB-AUTH': User.credential.accessToken
+        }
+      })
+    })
+  },
+  setActiveVideo(channel, index) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
       console.log(idToken)
       $.ajax({
@@ -42,8 +66,21 @@ export default {
         processData: false,
         url: API_ROOT + 'channels/' + channel,
         data: JSON.stringify({
-          active: ytid
+          active: index
         }),
+        headers: {
+          'X-LIVETUBE-AUTH': idToken,
+          'X-GITHUB-AUTH': User.credential.accessToken
+        }
+      })
+    })
+  },
+  removeVideo(channel, index) {
+    window.firebase.auth().currentUser.getToken().then((idToken) => {
+      $.ajax({
+        method: 'DELETE',
+        processData: false,
+        url: API_ROOT + 'channels/' + channel + '/videos/' + index,
         headers: {
           'X-LIVETUBE-AUTH': idToken,
           'X-GITHUB-AUTH': User.credential.accessToken

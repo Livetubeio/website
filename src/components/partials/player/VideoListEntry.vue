@@ -11,7 +11,7 @@
     <i class="more-icon material-icons right" ref="moreicon">more_vert</i>
     <div class="more-menu z-depth-1" v-if="showMore">
       <ul>
-        <li @click="deleteVideo">Delete</li>
+        <li @click.stop="deleteVideo">Delete</li>
       </ul>
     </div>
   </div>
@@ -22,7 +22,7 @@
 /* global $ */
 import Api from '../../../helpers/Api'
 export default {
-  props: ['video', 'activeVideo', 'index', 'channel', 'canEdit'],
+  props: ['video', 'videoKey', 'activeVideo', 'index', 'channel', 'canEdit'],
   data() {
     return {
       showMore: false
@@ -45,17 +45,17 @@ export default {
       }
     },
     deleteVideo() {
-      console.log('delete')
+      Api.removeVideo(this.channel, this.videoKey)
     },
     activateVideo(e) {
       if (this.$refs.moreicon !== e.target) {
-        Api.setActiveVideo(this.channel, this.video.ytid)
+        Api.setActiveVideo(this.channel, this.videoKey)
       }
     }
   },
   computed: {
     active() {
-      return this.video.ytid === this.activeVideo
+      return this.videoKey === this.activeVideo
     }
   }
 }

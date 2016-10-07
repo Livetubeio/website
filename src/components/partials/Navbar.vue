@@ -34,7 +34,6 @@ export default {
   },
   created() {
     EventBus.addEventListener('setTitle', ({target}) => {
-      console.log(target)
       this.subtitle = target
     })
     EventBus.addEventListener('authchange', ({
