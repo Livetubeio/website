@@ -30,15 +30,11 @@ export default {
       })
     })
   },
-  setPlayerState(channel, state) {
+  notifyLogin() {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
       $.ajax({
-        method: 'PUT',
-        processData: false,
-        url: API_ROOT + 'channels/' + channel,
-        data: JSON.stringify({
-          playerstate: state
-        }),
+        method: 'POST',
+        url: API_ROOT + 'login',
         headers: {
           'X-LIVETUBE-AUTH': idToken,
           'X-GITHUB-AUTH': User.credential.accessToken
@@ -46,11 +42,17 @@ export default {
       })
     })
   },
-  notifyLogin() {
+  setPlayerState(channel, state, videoTime) {
     window.firebase.auth().currentUser.getToken().then((idToken) => {
       $.ajax({
-        method: 'POST',
-        url: API_ROOT + 'login',
+        method: 'PUT',
+        processData: false,
+        url: API_ROOT + 'channels/' + channel,
+        data: JSON.stringify({
+          playerstate: state,
+          video_time: parseInt(videoTime),
+          changed_at: parseInt(window.ServerDate.now())
+        }),
         headers: {
           'X-LIVETUBE-AUTH': idToken,
           'X-GITHUB-AUTH': User.credential.accessToken
@@ -66,7 +68,9 @@ export default {
         processData: false,
         url: API_ROOT + 'channels/' + channel,
         data: JSON.stringify({
-          active: index
+          active: index,
+          video_time: 0,
+          changed_at: parseInt(window.ServerDate.now())
         }),
         headers: {
           'X-LIVETUBE-AUTH': idToken,

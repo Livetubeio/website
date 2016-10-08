@@ -90,10 +90,9 @@ export default {
       this.setPlayerState()
     })
     this.$watch('videos', () => {
-      if (!this.videos) {
+      if (!this.videoCount) {
         return
       }
-      console.log(this.videos)
       Vue.nextTick(() => {
         if (Object.keys(this.videos).length > 0) {
           var slider = document.getElementById('volume')
@@ -120,7 +119,7 @@ export default {
   methods: {
     setupFirebase() {
       this.$watch('channeldata', () => {
-        if (typeof this.channeldata['.key'] !== 'undefined') {
+        if (this.channeldata && typeof this.channeldata['.key'] !== 'undefined') {
           this.hasLoaded = true
         }
       })
@@ -138,18 +137,20 @@ export default {
       }
     },
     toggleVideo() {
+      console.log('playertime', this.player.getCurrentTime())
       if (this.channeldata.playerstate === 1) {
         // Pause the video
         this.player.pauseVideo()
-        Api.setPlayerState(this.channel, 2)
+        Api.setPlayerState(this.channel, 2, this.player.getCurrentTime())
       } else {
         // Play the video
-        Api.setPlayerState(this.channel, 1)
+        Api.setPlayerState(this.channel, 1, this.player.getCurrentTime())
       }
     },
     setPlayerState() {
       if (this.channeldata.playerstate === 1) {
         if (this.player) {
+          this.player.seekTo(this.getRealVideoPosition(), true)
           this.player.playVideo()
         }
       } else {
@@ -165,12 +166,6 @@ export default {
       this.player.addEventListener('onStateChange', (event) => {
         if (event.data === 0) {
           Api.notifyVideoEnded(this.channel)
-        }
-        if (event.data === 1) {
-          this.channeldata.playerstate = 1
-        }
-        if (event.data === 2) {
-          this.channeldata.playerstate = 2
         }
       })
     },
@@ -246,6 +241,13 @@ export default {
         this.volume = 0
       }
       document.getElementById('volume').noUiSlider.set(this.volume)
+    },
+    getRealVideoPosition() {
+      let videoTime = this.channeldata.video_time
+      console.log('vid', videoTime)
+      let diff = (parseInt(window.ServerDate.now()) - this.channeldata.changed_at) / 1000
+      console.log('diff', diff)
+      return videoTime + diff
     }
   },
   computed: {
@@ -278,7 +280,7 @@ export default {
       if (!this.videos) {
         return 0
       }
-      return Object.keys(this.videos).length
+      return Object.keys(this.videos).length - 2
     }
   },
   components: {
