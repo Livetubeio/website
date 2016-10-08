@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import VueFire from 'vuefire'
+/*eslint no-unused-vars: 0*/
+import Serverdate from './helpers/Serverdate'
 
 import Frontpage from './components/Frontpage'
 import About from './components/About'

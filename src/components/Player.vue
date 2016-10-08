@@ -244,9 +244,8 @@ export default {
     },
     getRealVideoPosition() {
       let videoTime = this.channeldata.video_time
-      console.log('vid', videoTime)
-      let diff = (parseInt(window.ServerDate.now()) - this.channeldata.changed_at) / 1000
-      console.log('diff', diff)
+      let diff = (window.ServerDate.now() - this.channeldata.changed_at) / 1000
+      diff = parseInt(diff)
       return videoTime + diff
     }
   },

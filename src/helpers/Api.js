@@ -91,5 +91,18 @@ export default {
         }
       })
     })
+  },
+  getCurrentTime() {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        method: 'GET',
+        processData: false,
+        url: API_ROOT + 'servertime'
+      }).then((data) => {
+        resolve(JSON.parse(data)['timestamp'])
+      }).fail(() => {
+        reject()
+      })
+    })
   }
 }

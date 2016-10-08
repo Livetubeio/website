@@ -4,6 +4,8 @@ COPYRIGHT
 
 Copyright 2012 David Braun
 
+Modified 2016 by Paul Mohr (p.mohr@sopamo.de)
+
 This file is part of ServerDate.
 
 ServerDate is free software: you can redistribute it and/or modify
@@ -22,8 +24,8 @@ along with ServerDate.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 'use strict';
-
-var ServerDate = (function(serverNow) {
+import Api from './Api'
+window.ServerDate = (function(serverNow) {
   // This is the first time we align with the server's clock by using the time
   // this script was generated (serverNow) and noticing the client time before
   // and after the script was loaded.  This gives us a good estimation of the
@@ -32,12 +34,6 @@ var ServerDate = (function(serverNow) {
   var
   // Remember when the script was loaded.
     scriptLoadTime = Date.now(),
-
-    // Remember the URL of this script so we can call it again during
-    // synchronization.
-    scripts = document.getElementsByTagName("script"),
-    URL = scripts[scripts.length - 1].src,
-
     synchronizationIntervalDelay,
     synchronizationInterval,
     precision,
@@ -177,39 +173,12 @@ var ServerDate = (function(serverNow) {
 
     // Request a time sample from the server.
     function requestSample() {
-      var request = new XMLHttpRequest();
 
-      // Ask the server for another copy of ServerDate.js but specify a unique number on the URL querystring
-      // so that we don't get the browser cached Javascript file
-      request.open("GET", URL + "?noCache=" + Date.now());
-
-      // At the earliest possible moment of the response, record the time at
-      // which we received it.
-      request.onreadystatechange = function() {
-        // If we got the headers and everything's OK
-        if ((this.readyState == this.HEADERS_RECEIVED) &&
-          (this.status == 200))
-          responseTime = Date.now();
-      };
-
-      // Process the server's response.
-      request.onload = function() {
-        // If OK
-        if (this.status == 200) {
-          try {
-            // Process the server's Date from the response header
-            processSample((new Date(this.getResponseHeader("Date"))).getTime());
-          } catch (exception) {
-            log("Unable to read the server's response.");
-          }
-        }
-      };
-
-      // Remember the time at which we sent the request to the server.
       requestTime = Date.now();
-
-      // Send the request.
-      request.send();
+      Api.getCurrentTime().then((timestamp) => {
+        responseTime = Date.now();
+        processSample((new Date(timestamp)).getTime());
+      })
     }
 
     // Process the time sample received from the server.
