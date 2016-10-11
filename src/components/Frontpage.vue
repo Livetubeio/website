@@ -23,11 +23,11 @@
   <section class="frontpage-top-channels">
     <h1 style="text-align: center">Now playing</h1>
     <ul class="frontpage-top-channel-list">
-      <li v-for="(channel, channelname) in randomChannels">
+      <li v-if="ytids[channelname]" v-for="(channel, channelname) in randomChannels">
         <router-link :to="'/' + decodeChannelName(channelname)" class="top-channel-link">
             <div class="top-channel-wrapper">
                 <div class="top-channel">
-                    <img :src="'https://img.youtube.com/vi/' + channel.active + '/0.jpg'">
+                    <img :src="'https://img.youtube.com/vi/' + ytids[channelname] + '/0.jpg'">
 
                     <div class="channel-name">
                         {{ decodeChannelName(channelname) }}
@@ -103,9 +103,13 @@
 <script>
 import db from '../helpers/Firebase'
 import _ from 'lodash'
+import Vue from 'vue'
+
 export default {
   data() {
-    return {}
+    return {
+      ytids: {}
+    }
   },
   firebase: function() {
     return {
@@ -126,16 +130,25 @@ export default {
       let keys = Object.keys(this.channels)
       if (!keys) return {}
 
+      // Randomize the channels
       keys = _.shuffle(keys.filter(key => key !== '.key'))
       let data = _.mapValues(this.channels, (channel, channelname) => {
         return keys.indexOf(channelname) !== -1 ? channel : false
       })
+      // Take the first 5 channels
       let final = {}
       let c = 0
       _.forEach(keys, (channelname) => {
         if (data[channelname] && c < 5) {
           c++
           final[channelname] = data[channelname]
+          // Load the active video id
+          db.ref('/channels/' + channelname + '/videos/' + final[channelname].active).once('value').then(snapshot => {
+            let data = snapshot.val()
+            if (data) {
+              Vue.set(this.ytids, channelname, data.ytid)
+            }
+          })
         }
       })
       if (!final) return {}

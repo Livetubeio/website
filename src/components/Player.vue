@@ -279,7 +279,7 @@ export default {
       if (!this.videos) {
         return 0
       }
-      return Object.keys(this.videos).length - 2
+      return Object.keys(this.videos).filter(id => id !== '.key').length
     }
   },
   components: {
