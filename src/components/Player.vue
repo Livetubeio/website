@@ -93,22 +93,27 @@ export default {
       if (!this.videoCount) {
         return
       }
+      // If we don't have an active video yet, set the first video to the active one
+      if (!this.channeldata.active) {
+        Api.setActiveVideo(this.channel, Object.keys(this.videos)[0])
+        Api.setPlayerState(this.channel, 1, 0)
+      }
+
+      // Enabled the volume slider
       Vue.nextTick(() => {
-        if (Object.keys(this.videos).length > 0) {
-          var slider = document.getElementById('volume')
-          noUiSlider.create(slider, {
-            start: this.volume,
-            step: 1,
-            range: {
-              'min': 0,
-              'max': 100
-            }
-          })
-          slider.noUiSlider.on('update', (values) => {
-            this.volume = parseInt(values[0])
-            this.setVolume()
-          })
-        }
+        var slider = document.getElementById('volume')
+        noUiSlider.create(slider, {
+          start: this.volume,
+          step: 1,
+          range: {
+            min: 0,
+            max: 100
+          }
+        })
+        slider.noUiSlider.on('update', (values) => {
+          this.volume = parseInt(values[0])
+          this.setVolume()
+        })
       })
     })
   },
@@ -206,11 +211,11 @@ export default {
       })
       if (!nextVideo) {
         // This was the last video, go to the first one.
-        this.channeldata.active = Object.keys(this.videos)[0]
+        Api.setActiveVideo(this.channel, Object.keys(this.videos)[0])
         return
       }
       // Go to the next video
-      this.channeldata.active = nextVideo
+      Api.setActiveVideo(this.channel, nextVideo)
     },
     prevVideo() {
       if (!this.videos) {
@@ -227,12 +232,12 @@ export default {
       })
       if (!nextVideo) {
         // This was the first video, go to the last one.
-        this.channeldata.active = Object.keys(this.videos)[Object.keys(this.videos).length - 2]
+        Api.setActiveVideo(this.channel, Object.keys(this.videos)[Object.keys(this.videos).length - 2])
         return
       }
 
       // Go to the next video
-      this.channeldata.active = nextVideo
+      Api.setActiveVideo(this.channel, nextVideo)
     },
     toggleVolume() {
       if (this.volume === 0) {
@@ -279,7 +284,7 @@ export default {
       if (!this.videos) {
         return 0
       }
-      return Object.keys(this.videos).filter(id => id !== '.key').length
+      return Object.keys(this.videos).filter(id => id !== '.key' && id !== '.value').length
     }
   },
   components: {
