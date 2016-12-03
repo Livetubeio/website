@@ -16,6 +16,11 @@
         <router-link to="/profile"><img class="avatar" :src="user.photoURL"></router-link>
       </li>
     </ul>
+    <ul id="nav-mobile" class="right hide-on-large-only">
+      <li v-if="user" class="profile-link">
+        <router-link to="/profile"><img class="avatar" :src="user.photoURL"></router-link>
+      </li>
+    </ul>
   </div>
 </nav>
 </template>
@@ -78,3 +83,16 @@ export default {
   }
 }
 </script>
+
+<style>
+  @media only screen and (max-width: 1000px) {
+    nav .brand-logo {
+      font-size: 12px;
+      left: 100px;
+    }
+    .main-nav .avatar {
+      height: 56px;
+      width: 56px;
+    }
+  }
+</style>
