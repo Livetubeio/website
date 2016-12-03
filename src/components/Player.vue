@@ -87,7 +87,9 @@ export default {
     })
 
     this.$watch('channeldata', () => {
-      this.setPlayerState()
+      Vue.nextTick(() => {
+        this.setPlayerState()
+      })
     })
     this.$watch('videos', () => {
       if (!this.videoCount) {
@@ -251,6 +253,7 @@ export default {
       let videoTime = this.channeldata.video_time
       let diff = (window.ServerDate.now() - this.channeldata.changed_at) / 1000
       diff = parseInt(diff)
+      console.log(diff)
       return videoTime + diff
     }
   },

@@ -1,4 +1,4 @@
-const API_ROOT = 'https://livetubeio-16323.appspot.com/'
+const API_ROOT = 'https://livetube.yoforaride.com/'
 
 /* global $ */
 import User from './User'
