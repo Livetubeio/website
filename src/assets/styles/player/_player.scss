@@ -32,13 +32,23 @@
   }
 }
 
+.background-wrapper {
+  transform: scale(1.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .background-drop {
   background-size: cover;
-  background-position-y: -30vh;
+  background-size: 100% 300%;
+  background-position-y: 30%;
   position: fixed;
-  top: -50px;
-  left: -50px;
-  right: -50px;
-  bottom: -50px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   filter: blur(30px);
 }

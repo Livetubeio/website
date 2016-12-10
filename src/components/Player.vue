@@ -2,7 +2,9 @@
 <div class="fullheight">
   <empty-channel v-if="hasLoaded && videoCount === 0" :channel="channel" :can-edit="canEdit"></empty-channel>
   <div v-if="hasLoaded && videoCount > 0" class="player-wrapper">
-    <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
+    <div class="background-wrapper">
+      <div class="background-drop" :style="{'background-image': 'url(' + backgroundImage + ')'}"></div>
+    </div>
     <div class="container">
       <div class="row">
         <div class="col-s12">
